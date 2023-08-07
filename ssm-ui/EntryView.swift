@@ -40,7 +40,7 @@ struct EntryView: View {
     )}
     
     var body: some View {
-        EntryCard(status: entry.status, name: entry.name(), running: toggleBinding, showModal: $showModal, removeAction: wrappedRemoveAction)
+        EntryCard(status: entry.status, name: entry.name(), localPort: entry.localPort, remotePort: entry.remotePort, running: toggleBinding, showModal: $showModal, removeAction: wrappedRemoveAction)
             .sheet(isPresented: $showModal) {
                 ModalView(entry: entry)
             }
@@ -50,8 +50,8 @@ struct EntryView: View {
 struct EntryCard: View {
     let status: EntryStatus
     let name: String
-    let localPort: Int = 1337
-    let remotePort: Int = 1337
+    let localPort: Int
+    let remotePort: Int
     @Binding var running: Bool
     @Binding var showModal: Bool
     let removeAction: () -> Void
@@ -98,9 +98,9 @@ struct EntryView_Previews: PreviewProvider {
         @State var b = true
         
         VStack {
-            EntryCard(status: .running, name: "i12345678", running: $a, showModal: $a, removeAction: { })
-            EntryCard(status: .stopped, name: "DWH", running: $b, showModal: $a, removeAction: { })
-            EntryCard(status: .error, name: "Database", running: $a, showModal: $a, removeAction: { })
+            EntryCard(status: .running, name: "i12345678", localPort: 1337, remotePort: 42069, running: $a, showModal: $a, removeAction: { })
+            EntryCard(status: .stopped, name: "DWH", localPort: 1337, remotePort: 42069, running: $b, showModal: $a, removeAction: { })
+            EntryCard(status: .error, name: "Database", localPort: 1337, remotePort: 42069, running: $a, showModal: $a, removeAction: { })
         }.padding()
     }
 }
@@ -126,6 +126,7 @@ struct ModalView: View {
         Form {
             TextField("Name", text: nicknameBinding)
             TextField("Instance Name", text: $entry.identifier)
+            TextField("Environment", text: $entry.env)
             TextField("Local Port", value: $entry.localPort, formatter: numberFormatter)
             TextField("Remote Port", value: $entry.remotePort, formatter: numberFormatter)
             Button("Save") {
