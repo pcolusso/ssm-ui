@@ -1,42 +1,64 @@
 import SwiftUI
 
-enum EntriesState {
-    case notLoaded, loaded(Array<Entry>)
-}
-
 struct EntriesLoaderView: View {
-    @State var state: EntriesState = .notLoaded
-    private var entriesBinding: Binding<[Entry]> {
-        Binding(
+    @ObservedObject var file = JsonBackedEntries.init()
+    
+    var entries: Binding<[Entry]> {
+        Binding<[Entry]>(
             get: {
-                if case .loaded(let entries) = state {
-                    return entries
-                } else {
-                    preconditionFailure("Unreachable")
+                guard case .loaded(let entries) = file.state else {
+                    return [] //TODO: Ensure unreacheable
                 }
+                return entries
             },
-            set: { newEntries in
-                preconditionFailure("Unreachable")
+            set: {
+                file.state = .loaded($0) // TODO: Should this also not be reachable?
+                file.save()
             }
         )
     }
     
+    init() {
+        self.file.load()
+    }
+    
+    func load() {
+        file.load()
+    }
+    
+    mutating func removeAction(id: String) {
+        guard case .loaded(let entries) = file.state else {
+            return
+        }
+        let filtered = entries.filter { $0.identifier == id }
+        file.state = .loaded(filtered)
+        file.save()
+    }
+    
     var body: some View {
-        switch state {
-        case .notLoaded:
+        switch file.state {
+        case .idle:
+            Button(action: load) {
+                Label("Load", systemImage: "filemenu.and.selection")
+            }
+        case .loading:
             VStack {
                 Text("Not Loaded")
                 ProgressView()
             }
-        case .loaded(_): // Technically, we can pull the array out of the sum type, but SwiftUI does not have sugar to facilitate that. As a result, we use an adapter to create the binding for us. In theory, the other branches are not reachable.
-            EntriesView(entries: entriesBinding)
+        case .loaded(_):
+            EntriesView(entries: entries, removeAction: { id in })
+        case .failed(let error):
+            Text("Failed to load: \(error.localizedDescription)")
         }
+        
     }
 }
 
 struct EntriesView: View {
     @State var showingModal = false;
     @Binding var entries: Array<Entry>
+    var removeAction: (String) -> Void
     
     func newEntry() {
         showingModal = true
@@ -46,7 +68,7 @@ struct EntriesView: View {
         VStack {
             VStack {
                 ForEach(entries, id: \.identifier) { entry in
-                    EntryView(entry: entry)
+                    EntryView(entry: entry, removeAction: removeAction)
                 }
             }
             VStack(alignment: .trailing) {
@@ -98,6 +120,6 @@ struct EntriesView_Previews: PreviewProvider {
             Entry(identifier: "i-1234567890", env: "smallapps-dev", localPort: 3389, remotePort: 3389)
         ]
         
-        EntriesView(entries: $entries)
+        EntriesView(entries: $entries, removeAction: {_ in } )
     }
 }

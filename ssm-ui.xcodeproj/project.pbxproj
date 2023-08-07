@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EC24FAD52A7F0D9900157EE9 /* Entries.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC24FAD42A7F0D9900157EE9 /* Entries.swift */; };
 		EC5A5ED02A7BAF79004615A2 /* EntriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC5A5ECF2A7BAF79004615A2 /* EntriesView.swift */; };
 		EC6CD8282A7B3AD900DED860 /* ssm_uiApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6CD8272A7B3AD900DED860 /* ssm_uiApp.swift */; };
 		EC6CD82A2A7B3AD900DED860 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6CD8292A7B3AD900DED860 /* ContentView.swift */; };
@@ -18,6 +19,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		EC24FAD42A7F0D9900157EE9 /* Entries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Entries.swift; sourceTree = "<group>"; };
 		EC5A5ECF2A7BAF79004615A2 /* EntriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntriesView.swift; sourceTree = "<group>"; };
 		EC6CD8242A7B3AD900DED860 /* ssm-ui.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ssm-ui.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC6CD8272A7B3AD900DED860 /* ssm_uiApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ssm_uiApp.swift; sourceTree = "<group>"; };
@@ -69,6 +71,7 @@
 				EC6CD8362A7B526100DED860 /* Status.swift */,
 				EC6CD83A2A7B5B1000DED860 /* Entry.swift */,
 				EC5A5ECF2A7BAF79004615A2 /* EntriesView.swift */,
+				EC24FAD42A7F0D9900157EE9 /* Entries.swift */,
 			);
 			path = "ssm-ui";
 			sourceTree = "<group>";
@@ -152,6 +155,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EC6CD83B2A7B5B1100DED860 /* Entry.swift in Sources */,
+				EC24FAD52A7F0D9900157EE9 /* Entries.swift in Sources */,
 				EC6CD82A2A7B3AD900DED860 /* ContentView.swift in Sources */,
 				EC6CD8282A7B3AD900DED860 /* ssm_uiApp.swift in Sources */,
 				EC6CD8372A7B526100DED860 /* Status.swift in Sources */,

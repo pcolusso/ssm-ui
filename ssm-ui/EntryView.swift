@@ -20,7 +20,13 @@ func color(forStatus status: EntryStatus) -> Color {
 
 struct EntryView: View {
     @ObservedObject var entry: Entry
+    let removeAction: (String) -> Void
     @State private var showModal = false
+    
+    
+    func wrappedRemoveAction() {
+        removeAction(entry.identifier)
+    }
     
     private var toggleBinding: Binding<Bool> { Binding (
         get: { entry.status == .running },
@@ -34,7 +40,7 @@ struct EntryView: View {
     )}
     
     var body: some View {
-        EntryCard(status: entry.status, name: entry.name(), running: toggleBinding, showModal: $showModal)
+        EntryCard(status: entry.status, name: entry.name(), running: toggleBinding, showModal: $showModal, removeAction: wrappedRemoveAction)
             .sheet(isPresented: $showModal) {
                 ModalView(entry: entry)
             }
@@ -48,6 +54,7 @@ struct EntryCard: View {
     let remotePort: Int = 1337
     @Binding var running: Bool
     @Binding var showModal: Bool
+    let removeAction: () -> Void
     
     var subtitle: String {
         switch status {
@@ -74,7 +81,7 @@ struct EntryCard: View {
                 }
             }
             Spacer(minLength: 3)
-            Button(action: edit) {
+            Button(action: removeAction) {
                 Label("Delete", systemImage: "trash")
             }.labelStyle(.iconOnly)
             Button(action: edit) {
@@ -91,9 +98,9 @@ struct EntryView_Previews: PreviewProvider {
         @State var b = true
         
         VStack {
-            EntryCard(status: .running, name: "i12345678", running: $a, showModal: $a)
-            EntryCard(status: .stopped, name: "DWH", running: $b, showModal: $a)
-            EntryCard(status: .error, name: "Database", running: $a, showModal: $a)
+            EntryCard(status: .running, name: "i12345678", running: $a, showModal: $a, removeAction: { })
+            EntryCard(status: .stopped, name: "DWH", running: $b, showModal: $a, removeAction: { })
+            EntryCard(status: .error, name: "Database", running: $a, showModal: $a, removeAction: { })
         }.padding()
     }
 }
