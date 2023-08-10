@@ -9,14 +9,15 @@ class JsonBackedEntries : ObservableObject {
     enum State {
         case idle
         case loading
-        case loaded(Array<Entry>)
+        case loaded
         case failed(Error)
     }
     
     @Published var state = State.idle
+    @Published var entries: [Entry] = []
     
     func save() {
-        guard case .loaded(let entries) = state else {
+        guard case .loaded = state else {
             return // cannot save an unloaded state
         }
         
@@ -43,7 +44,8 @@ class JsonBackedEntries : ObservableObject {
                     let decoder = JSONDecoder()
                     let decoded = try decoder.decode([Entry].self, from: data)
                     DispatchQueue.main.async {
-                        self.state = .loaded(decoded)
+                        self.state = .loaded
+                        self.entries = decoded
                     }
                 } catch { // The file exists, but could not be loaded. Bubble up that the file needs to be recovered.
                     DispatchQueue.main.async {
@@ -52,7 +54,8 @@ class JsonBackedEntries : ObservableObject {
                 }
             } else { // The file does not exist, create a new empty one.
                 DispatchQueue.main.async {
-                    self.state = .loaded(Array<Entry>.init())
+                    self.state = .loaded
+                    self.entries = []
                     // Optional: You may also want to save the empty array to create the file
                     self.save()
                 }
