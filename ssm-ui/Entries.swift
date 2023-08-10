@@ -14,7 +14,11 @@ class JsonBackedEntries : ObservableObject {
     }
     
     @Published var state = State.idle
-    @Published var entries: [Entry] = []
+    @Published var entries: [Entry] = [] {
+        didSet {
+            save()
+        }
+    }
     
     func save() {
         guard case .loaded = state else {
@@ -62,5 +66,4 @@ class JsonBackedEntries : ObservableObject {
             }
         }
     }
-
 }

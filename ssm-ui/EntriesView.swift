@@ -41,8 +41,14 @@ struct EntriesLoaderView: View {
 
 struct EntriesView: View {
     @State var showingModal = false;
-    @Binding var entries: Array<Entry>
+    @Binding var entries: [Entry]
     var removeAction: (String) -> Void
+    
+    func animatedRemoveAction(id: String) {
+        withAnimation {
+            removeAction(id)
+        }
+    }
     
     func newEntry() {
         showingModal = true
@@ -52,7 +58,7 @@ struct EntriesView: View {
         VStack {
             VStack {
                 ForEach(entries, id: \.identifier) { entry in
-                    EntryView(entry: entry, removeAction: removeAction)
+                    EntryView(entry: entry, removeAction: animatedRemoveAction).transition(.push(from: .top))
                 }
             }
             VStack(alignment: .trailing) {
@@ -62,7 +68,9 @@ struct EntriesView: View {
             }.frame(maxWidth: .infinity, alignment: .trailing)
         }.padding().sheet(isPresented: $showingModal) {
             NewEntryView { newEntry in
-                entries.append(newEntry)
+                withAnimation {
+                    entries.append(newEntry)
+                }
                 showingModal = false
             }
         }
